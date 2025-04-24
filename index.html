@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UPC Onboarding Exams</title>
+  <style>
+    :root {
+      --green: #28a745;
+      --orange: #fd7e14;
+      --blue: #007bff;
+      --light-bg: #f4f4f4;
+      --dark-text: #333;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--light-bg);
+      color: var(--dark-text);
+    }
+
+    header {
+      background: linear-gradient(90deg, var(--green), var(--orange), var(--blue));
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h2 {
+      color: var(--green);
+      margin-bottom: 1.5rem;
+    }
+
+    .timer {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: var(--orange);
+      display: none;
+    }
+
+    .form-container {
+      width: 100%;
+      min-height: 1000px;
+      border: 2px solid var(--blue);
+      border-radius: 6px;
+      overflow: hidden;
+      display: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 1000px;
+      border: none;
+    }
+
+    .start-btn {
+      padding: 1rem 2rem;
+      background-color: var(--green);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .start-btn:hover {
+      background-color: #218838;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      background: #eee;
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        margin: 1rem;
+        padding: 1rem;
+      }
+
+      header {
+        font-size: 1.5rem;
+      }
+
+      .timer {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>UPC Onboarding Exams</header>
+  <main>
+    <h2> Onboarding Post-Training Exam </h2>
+    <button class="start-btn" onclick="startExam()">Start the Exam</button>
+    <div class="timer" id="exam-timer">Time Remaining: 30:00</div>
+    <div class="form-container" id="form-container">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdTl74UvHLo461Vw6Z6KEEqBJU8hDaQ1yPEmrim24Krpa-Puw/viewform?embedded=true" width="650" height="13950" frameborder="0" marginheight="0" marginwidth="0">جارٍ التحميل…</iframe>
+    </div>
+  </main>
+  <footer>
+    &copy; 2025 UPC Exams. All rights reserved.
+  </footer>
+
+  <script>
+    let timer;
+
+    function startExam() {
+      document.querySelector('.start-btn').style.display = 'none';
+      document.querySelector('.timer').style.display = 'block';
+      document.getElementById('form-container').style.display = 'block';
+
+      // Start the timer
+      let duration = 30 * 60; // 30 minutes in seconds
+      const display = document.getElementById('exam-timer');
+      const iframe = document.getElementById('exam-frame');
+
+      timer = setInterval(() => {
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+        display.textContent = `Time Remaining: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+        if (--duration < 0) {
+          clearInterval(timer);
+          alert('انتهى وقت الأختبار، من فضلك ارسل اجابتك الآن من أجل أن يتم احتساب الدرجة');
+
+          try {
+            const iframeWindow = iframe.contentWindow;
+            const form = iframeWindow.document.querySelector('form');
+            if (form) {
+              form.submit();
+            } else {
+              alert('من فضلك ارسل اجابتك الآن من أجل أن يتم احتساب الدرجة');
+            }
+          } catch (e) {
+            alert('من فضلك ارسل اجابتك الآن من أجل أن يتم احتساب الدرجة');
+          }
+        }
+      }, 1000);
+    }
+
+    // Proctoring Function - Warn if user switches tab
+    let isFocused = true;
+    window.onblur = () => {
+      isFocused = false;
+      alert('هذا الاختبار يتم مراقبته، من فضلك لا تفتح أى موقع خارجى أثناء الإختبار من اجل أن يتم احتساب الدرجة ');
+      isFocused = true
+    };
+
+    window.onfocus = () => {
+      isFocused = true;
+    };
+  </script>
+</body>
+</html>
